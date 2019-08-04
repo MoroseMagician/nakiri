@@ -1,8 +1,11 @@
-from flask import Flask, escape, request
+from flask import Flask
+from api import auth
+from api import index
 
-app = Flask(__name__)
 
+def create_app():
+    app = Flask(__name__)
+    app.register_blueprint(auth.blueprint)
+    app.register_blueprint(index.blueprint)
 
-@app.route('/')
-def hello():
-  return f'Hello, Docker!'
+    return app
