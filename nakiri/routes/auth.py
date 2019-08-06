@@ -2,16 +2,20 @@ from flask import (
     Blueprint,
     request
 )
-from nakiri.models import User
+
+from nakiri.models.user import User
+from werkzeug.exceptions import BadRequestKeyError
+
 
 blueprint = Blueprint('auth', __name__, url_prefix='/auth')
 
 
 @blueprint.route('/register', methods=['POST'])
 def register():
-    if (request.form['username'] is None):
-        return 'Username required!'
-    print(User)
+    try:
+        user = User(username=request.form['username'])
+    except BadRequestKeyError:
+        return 'Username required'
 
 
 @blueprint.route('/login', methods=['POST'])

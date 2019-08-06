@@ -1,4 +1,4 @@
-from nakiri import db
+from nakiri.models.db import db
 
 
 class User(db.Model):
@@ -6,4 +6,4 @@ class User(db.Model):
     username = db.Column(db.String(64))
 
     def __repr__(self):
-        return f"<User({self.username})"
+        return f"<User({self.username})>"

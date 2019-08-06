@@ -1,12 +1,11 @@
 import click
 from flask import Flask
 from flask.cli import AppGroup
-from flask_sqlalchemy import SQLAlchemy
 
 from nakiri.routes import auth
 from nakiri.routes import index
 
-db = SQLAlchemy()
+from nakiri.models.db import db
 
 
 def create_app():
