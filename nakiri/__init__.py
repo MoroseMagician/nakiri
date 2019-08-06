@@ -15,8 +15,8 @@ def create_app():
     app.register_blueprint(index.blueprint)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-    db.init_app(app)
 
+    db.init_app(app)
     populate_cli(app)
 
     return app

@@ -7,8 +7,9 @@ verify_ssl = true
 
 [packages]
 flask = "==1.1.1"
-pyjwt = "*"
-flask-sqlalchemy = "*"
+pyjwt = "==1.7.1"
+flask-sqlalchemy = "==2.4.0"
+nakiri = {editable = true,path = "."}
 
 [requires]
 python_version = "3.7"

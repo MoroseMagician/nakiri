@@ -1,5 +1,6 @@
 __pycache__/
 .env
+*.egg-info
 
 # Vim
 [._]*.sw[a-p]
