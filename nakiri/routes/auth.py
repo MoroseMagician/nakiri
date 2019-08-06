@@ -1,4 +1,7 @@
-from flask import Blueprint
+from flask import (
+    Blueprint,
+    request
+)
 
 blueprint = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -11,3 +14,8 @@ def register():
 @blueprint.route('/login', methods=['POST'])
 def login():
     return 'login'
+
+
+@blueprint.route('/logout', methods=['POST'])
+def logout():
+    return request.form
