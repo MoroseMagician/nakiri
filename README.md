@@ -34,7 +34,7 @@ A really quick and easy way to mess with table schemas is to change the database
 
 ```diff
 - app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-- app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test2.db'
++ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test2.db'
 ```
 
 And then running the `db init` command on the container. You can skip pulling the containers down and spinning them back up with `docker exec -it nakiri pipenv run flask db init --yes`
