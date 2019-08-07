@@ -2,18 +2,19 @@ import click
 from flask import Flask
 from flask.cli import AppGroup
 
-from nakiri.routes import auth
 from nakiri.routes import index
+from nakiri.routes import user
 
 from nakiri.models.db import db
 
 
 def create_app():
     app = Flask(__name__)
-    app.register_blueprint(auth.blueprint)
+    app.register_blueprint(user.blueprint)
     app.register_blueprint(index.blueprint)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test2.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
     db.init_app(app)
     populate_cli(app)
