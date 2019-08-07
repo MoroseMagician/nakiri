@@ -14,7 +14,7 @@ class User(db.Model):
     username = db.Column(db.String(64))
     password = db.Column(db.String(128))
 
-    def add(self):
+    def add(self) -> None:
         """ Add the user to the database """
         # Hash and salt the password first
         self.password = generate_password_hash(

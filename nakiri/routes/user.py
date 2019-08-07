@@ -2,43 +2,20 @@ from flask import (
     Blueprint,
     request
 )
-from jwt.exceptions import (
-    InvalidSignatureError,
-    DecodeError
-)
-import os
-import jwt
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash
 
 from nakiri.models.user import User
-from nakiri import util
+from nakiri.decorators import authentication
+# from nakiri import util
 
 
 blueprint = Blueprint('user', __name__, url_prefix='/user')
 
 
 @blueprint.route('/<username>')
-def get(username) -> dict:
-    try:
-        token = request.headers['Authentication'].split(' ')[1]
-        jwt.decode(token, os.environ['NAKIRI_KEY'])
-    except IndexError:
-        return {
-            'success': False,
-            'message': 'Invalid authentication header.'
-        }
-    except InvalidSignatureError:
-        return {
-            'success': False,
-            'message': 'Invalid token signature.'
-        }
-    except DecodeError:
-        return {
-            'success': False,
-            'message': 'Malformed authentication token.'
-        }
-
+@authentication.token_required
+def get(username: str) -> dict:
     user = User.query.filter_by(username=username).first()
     if user is not None:
         return {
@@ -116,5 +93,6 @@ def login() -> dict:
 
 
 @blueprint.route('/logout', methods=['POST'])
+@authentication.token_required
 def logout():
     return request.form
