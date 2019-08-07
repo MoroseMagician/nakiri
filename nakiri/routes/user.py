@@ -2,6 +2,12 @@ from flask import (
     Blueprint,
     request
 )
+from jwt.exceptions import (
+    InvalidSignatureError,
+    DecodeError
+)
+import os
+import jwt
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash
 
@@ -13,7 +19,26 @@ blueprint = Blueprint('user', __name__, url_prefix='/user')
 
 
 @blueprint.route('/<username>')
-def get(username):
+def get(username) -> dict:
+    try:
+        token = request.headers['Authentication'].split(' ')[1]
+        jwt.decode(token, os.environ['NAKIRI_KEY'])
+    except IndexError:
+        return {
+            'success': False,
+            'message': 'Invalid authentication header.'
+        }
+    except InvalidSignatureError:
+        return {
+            'success': False,
+            'message': 'Invalid token signature.'
+        }
+    except DecodeError:
+        return {
+            'success': False,
+            'message': 'Malformed authentication token.'
+        }
+
     user = User.query.filter_by(username=username).first()
     if user is not None:
         return {
@@ -22,12 +47,13 @@ def get(username):
             'password': user.password
         }
     return {
+        'success': False,
         'message': 'User doesn\'t exist.'
     }
 
 
 @blueprint.route('/register', methods=['POST'])
-def register():
+def register() -> dict:
     try:
         user = User(
             username=request.form['username'],
@@ -56,7 +82,7 @@ def register():
 
 
 @blueprint.route('/login', methods=['POST'])
-def login():
+def login() -> dict:
     try:
         username = request.form['username']
         password = request.form['password']
@@ -84,7 +110,8 @@ def login():
 
     return {
         'success': True,
-        'message': 'Logged in!'
+        'message': 'Logged in!',
+        'token': user.generate_token()
     }
 
 
