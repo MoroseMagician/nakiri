@@ -15,9 +15,9 @@ def index() -> dict:
 
 
 @blueprint.route('/whoami')
-@authentication.token_required
+@authentication.token
 def whoami() -> dict:
-    user = User.query.filter_by(id=g.token['user']).first()
+    user = User.query.filter_by(id=g.user).first()
 
     return {
         'id':       user.id,

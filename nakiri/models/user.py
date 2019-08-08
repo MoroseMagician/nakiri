@@ -1,8 +1,5 @@
 from nakiri.models.db import db
 from werkzeug.security import generate_password_hash
-from datetime import datetime, timedelta
-import jwt
-import os
 
 
 class User(db.Model):
@@ -11,8 +8,8 @@ class User(db.Model):
     )
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64))
-    password = db.Column(db.String(128))
+    username = db.Column(db.String(64), nullable=False)
+    password = db.Column(db.String(128), nullable=False)
 
     def add(self) -> None:
         """ Add the user to the database """
@@ -23,21 +20,6 @@ class User(db.Model):
         )
         db.session.add(self)
         db.session.commit()
-
-    def generate_token(self) -> str:
-        """ Generate a JWT token for the user """
-        payload = {
-            'user': self.id,
-            'iat': datetime.utcnow(),
-            'exp': datetime.utcnow() + timedelta(days=7)
-        }
-        secret = os.environ['NAKIRI_KEY']
-
-        # Make sure the key is properly set
-        assert(len(secret) >= 32)
-
-        token = jwt.encode(payload, secret, algorithm='HS256')
-        return token.decode('utf-8')
 
     def __repr__(self) -> str:
         return f"<User({self.username})>"

@@ -1,20 +1,21 @@
 from flask import (
     Blueprint,
-    request
+    request,
+    g
 )
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash
 
 from nakiri.models.user import User
+from nakiri.models.token import Token
 from nakiri.decorators import authentication
-# from nakiri import util
 
 
 blueprint = Blueprint('user', __name__, url_prefix='/user')
 
 
 @blueprint.route('/<username>')
-@authentication.token_required
+@authentication.token
 def get(username: str) -> dict:
     user = User.query.filter_by(username=username).first()
     if user is not None:
@@ -85,14 +86,21 @@ def login() -> dict:
             'message': 'Wrong password.'
         }
 
+    token = Token(user.id)
+    token.add()
+
     return {
         'success': True,
         'message': 'Logged in!',
-        'token': user.generate_token()
+        'token': token.token
     }
 
 
 @blueprint.route('/logout', methods=['POST'])
-@authentication.token_required
+@authentication.token
 def logout():
-    return request.form
+    g.token.delete()
+    return {
+        'success': True,
+        'message': 'Logged out successfully.'
+    }

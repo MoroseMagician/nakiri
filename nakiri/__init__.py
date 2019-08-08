@@ -13,7 +13,7 @@ def create_app():
     app.register_blueprint(user.blueprint)
     app.register_blueprint(index.blueprint)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test2.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test3.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
     db.init_app(app)

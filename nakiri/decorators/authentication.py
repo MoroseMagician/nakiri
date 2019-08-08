@@ -7,9 +7,15 @@ from jwt.exceptions import (
     InvalidSignatureError,
     DecodeError
 )
+from datetime import (
+    datetime,
+    timezone
+)
+
+from nakiri.models.token import Token
 
 
-def token_required(f: Callable):
+def token(f: Callable):
     """ Authenticate a request with a token header """
     @wraps(f)
     def wrapper(*args, **kwargs):
@@ -40,7 +46,28 @@ def token_required(f: Callable):
                 'message': 'Malformed authentication token.'
             }
 
+        db_token = Token.query.filter_by(token=encoded_token).first()
+        current_timestamp = int(
+            datetime.now()
+            .replace(tzinfo=timezone.utc)
+            .timestamp()
+        )
+
+        if db_token is None:
+            return {
+                'success': False,
+                'message': 'Invalid token.'
+            }
+
+        if db_token.deleted or current_timestamp > token['exp']:
+            return {
+                'success': False,
+                'message': 'Token is expired.'
+            }
+
         # Inject the token into the application context
-        g.token = token
+        g.user = token['user']
+        g.token = db_token
+
         return f(*args, **kwargs)
     return wrapper
