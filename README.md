@@ -11,9 +11,11 @@ Flask API with JWT authentication
 $(/usr/bin/env python -c 'import secrets; print(f"export NAKIRI_KEY={secrets.token_urlsafe(64)}")')
 ```
 
-3. Set the Postgres password with `export NAKIRI_DB_PASSWORD=hunter2`
+3. Set the Postgres user with `export NAKIRI_DB_USER=mari`
 
-4. Spin up the Docker containers
+4. Set the Postgres user with `export NAKIRI_DB_PASSWORD=hunter2`
+
+5. Spin up the Docker containers
 
 ```bash
 docker-compose up -d
@@ -25,22 +27,21 @@ If the Dockerfile or dependencies have changed, rebuild the images with
 docker-compose up -d --build
 ```
 
+6. Run migrations `docker exec -it pipenv run flask db upgrade`
+
 ## Hack away
 
 The Flask app spins up in debug mode by default, so it watches for changes and reloads appropriately. If you want to keep an eye on logs, spin the containers up without the `-d` flag, i.e. `docker-compose up`
 
+The database is mounted on a volume, so it should persist through restarts as long as you don't run `docker system prune -af` or something.
 
-#### Reinit database
+### Database stuff
 
-A really quick and easy way to mess with table schemas is to change the database URI and reinitialize the database. E.g.
+Nakiri uses Flask-Migrate which uses Alembic under the hood. Migrations are generated with the `flask db migrate` command or the `flask db revision` command. `flask db migrate` autogenerates migrations from changes in the models, but it's pretty limited in what it can pick up, e.g. column types are really finnicky.
 
-```diff
-- app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-+ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test2.db'
-```
+Migrations are kept under the `/migrations` folder (waow!), to run the migrations, just run `flask db upgrade`.
 
-And then running the `db init` command on the container. You can skip pulling the containers down and spinning them back up with `docker exec -it nakiri pipenv run flask db init --yes`
-
+Note that you can connect to the Postgres database from the host, using something like pgAdmin, at `localhost:5432`
 
 #### `print()` debugging
 
