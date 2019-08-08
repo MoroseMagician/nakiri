@@ -4,18 +4,17 @@ Flask API with JWT authentication
 
 ## Setup
 
-1. Get Python 3.7 and install pipenv
-2. Generate a JWT signing key.
+1. Generate a JWT signing key.
 
 ```bash
 $(/usr/bin/env python -c 'import secrets; print(f"export NAKIRI_KEY={secrets.token_urlsafe(64)}")')
 ```
 
-3. Set the Postgres password with `export NAKIRI_DB_PASSWORD=hunter2`
+2. Set the Postgres password with `export NAKIRI_DB_PASSWORD=hunter2`
 
-4. Set the Postgres connection string with `export NAKIRI_DB="postgres://postgres:hunter2@nakiri-db:5432/nakiri"`
+3. Set the Postgres connection string with `export NAKIRI_DB="postgres://postgres:hunter2@nakiri-db:5432/nakiri"`
 
-5. Spin up the Docker containers
+4. Spin up the Docker containers
 
 ```bash
 docker-compose up -d
@@ -26,8 +25,6 @@ If the Dockerfile or dependencies have changed, rebuild the images with
 ```bash
 docker-compose up -d --build
 ```
-
-6. Run migrations `docker exec -it pipenv run flask db upgrade`
 
 ## Hack away
 
