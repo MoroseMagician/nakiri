@@ -1,5 +1,6 @@
 from nakiri.models.db import db
 from werkzeug.security import generate_password_hash
+from datetime import datetime
 
 
 class User(db.Model):
@@ -9,7 +10,8 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), nullable=False)
-    password = db.Column(db.String(128), nullable=False)
+    password = db.Column(db.Text, nullable=False)
+    created = db.Column(db.DateTime, default=datetime.utcnow)
 
     def add(self) -> None:
         """ Add the user to the database """

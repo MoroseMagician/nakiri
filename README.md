@@ -11,13 +11,15 @@ Flask API with JWT authentication
 $(/usr/bin/env python -c 'import secrets; print(f"export NAKIRI_KEY={secrets.token_urlsafe(64)}")')
 ```
 
-3. Spin up the Docker containers
+3. Set the Postgres password with `export NAKIRI_DB_PASSWORD=hunter2`
+
+4. Spin up the Docker containers
 
 ```bash
 docker-compose up -d
 ```
 
-If the Dockerfile has changed, rebuild the images with
+If the Dockerfile or dependencies have changed, rebuild the images with
 
 ```bash
 docker-compose up -d --build

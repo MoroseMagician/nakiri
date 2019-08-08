@@ -5,7 +5,6 @@ services:
     build: ./
     container_name: nakiri
     ports: ['5000:5000']
-    volumes: ['./nakiri:/app/nakiri']
     entrypoint:
       - ./entrypoint.sh
     environment:
@@ -13,3 +12,21 @@ services:
       - FLASK_ENV=development
       - FLASK_APP=nakiri
       - NAKIRI_KEY=${NAKIRI_KEY}
+      - NAKIRI_DB_USER=${NAKIRI_DB_USER}
+      - NAKIRI_DB_PASSWORD=${NAKIRI_DB_PASSWORD}
+    volumes:
+      - './nakiri:/app/nakiri'
+      - './migrations:/app/migrations'
+    restart: always
+  db:
+    image: 'postgres:11.4'
+    container_name: nakiri-db
+    ports: ['5432:5432']
+    environment:
+      - POSTGRES_PASSWORD=${NAKIRI_DB_PASSWORD}
+    volumes:
+      - nakiri-data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  nakiri-data:
