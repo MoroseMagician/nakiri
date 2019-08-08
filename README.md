@@ -11,9 +11,9 @@ Flask API with JWT authentication
 $(/usr/bin/env python -c 'import secrets; print(f"export NAKIRI_KEY={secrets.token_urlsafe(64)}")')
 ```
 
-3. Set the Postgres user with `export NAKIRI_DB_USER=mari`
+3. Set the Postgres password with `export NAKIRI_DB_PASSWORD=hunter2`
 
-4. Set the Postgres user with `export NAKIRI_DB_PASSWORD=hunter2`
+4. Set the Postgres connection string with `export NAKIRI_DB="postgres://postgres:hunter2@nakiri-db:5432/nakiri"`
 
 5. Spin up the Docker containers
 

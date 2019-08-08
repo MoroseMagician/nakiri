@@ -12,8 +12,7 @@ services:
       - FLASK_ENV=development
       - FLASK_APP=nakiri
       - NAKIRI_KEY=${NAKIRI_KEY}
-      - NAKIRI_DB_USER=${NAKIRI_DB_USER}
-      - NAKIRI_DB_PASSWORD=${NAKIRI_DB_PASSWORD}
+      - NAKIRI_DB=${NAKIRI_DB}
     volumes:
       - './nakiri:/app/nakiri'
       - './migrations:/app/migrations'

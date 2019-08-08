@@ -12,13 +12,7 @@ def create_app():
     app.register_blueprint(user.blueprint)
     app.register_blueprint(index.blueprint)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = (
-        f'postgres://'
-        f'{os.environ["NAKIRI_DB_USER"]}'
-        f':{os.environ["NAKIRI_DB_PASSWORD"]}'
-        f'@nakiri-db:5432'
-        f'/nakiri'
-    )
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['NAKIRI_DB']
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
