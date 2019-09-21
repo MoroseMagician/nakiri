@@ -12,6 +12,7 @@ flask-sqlalchemy = "==2.4.0"
 nakiri = {editable = true,path = "."}
 flask-migrate = "==2.5.2"
 psycopg2 = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.7"
