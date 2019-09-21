@@ -24,27 +24,23 @@ def token(f: Callable):
             encoded_token = header.split(' ')[1]
         except KeyError:
             return {
-                'success': False,
                 'message': 'Missing authentication header.'
-            }
+            }, 403
         except IndexError:
             return {
-                'success': False,
                 'message': 'Invalid authentication header.'
-            }
+            }, 400
 
         try:
             token = jwt.decode(encoded_token, os.environ['NAKIRI_KEY'])
         except InvalidSignatureError:
             return {
-                'success': False,
                 'message': 'Invalid token signature.'
-            }
+            }, 403
         except DecodeError:
             return {
-                'success': False,
                 'message': 'Malformed authentication token.'
-            }
+            }, 403
 
         db_token = Token.query.filter_by(token=encoded_token).first()
         current_timestamp = int(
@@ -55,15 +51,13 @@ def token(f: Callable):
 
         if db_token is None:
             return {
-                'success': False,
                 'message': 'Invalid token.'
-            }
+            }, 403
 
         if db_token.deleted or current_timestamp > token['exp']:
             return {
-                'success': False,
                 'message': 'Token is expired.'
-            }
+            }, 403
 
         # Inject the token into the application context
         g.user = token['user']

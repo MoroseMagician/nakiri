@@ -74,31 +74,27 @@ def login() -> dict:
     except KeyError as ex:
         missing_arg = ex.args[0]
         return {
-            'success': False,
             'message': f'{missing_arg.title()} required'
-        }
+        }, 400
 
     # Get user
     user = User.query.filter_by(username=username).first()
     if user is None:
         return {
-            'success': False,
             'message': 'User doesn\'t exist.'
-        }
+        }, 403
 
     # Check password
     if not check_password_hash(user.password, password):
         return {
-            'success': False,
             'message': 'Wrong password.'
-        }
+        }, 403
 
     token = Token(user.id)
     token.add()
 
     return {
         'success': True,
-        'message': 'Logged in!',
         'token': token.token
     }
 
