@@ -5,6 +5,7 @@ from flask import (
 )
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash
+from werkzeug.exceptions import BadRequest
 
 from nakiri.models.user import User
 from nakiri.models.token import Token
@@ -33,25 +34,26 @@ def get(username: str) -> dict:
 @blueprint.route('/register', methods=['POST'])
 def register() -> dict:
     try:
+        body = request.get_json()
         user = User(
-            username=request.form['username'],
-            password=request.form['password']
+            username=body['username'],
+            password=body['password']
         )
+        user.add()
+    except BadRequest:
+        return {
+            'message': 'Failed to parse JSON body.',
+        }, 400
     except KeyError as ex:
         missing_arg = ex.args[0]
         return {
-            'success': False,
             'message': f'{missing_arg.title()} required'
-        }
-
-    try:
-        user.add()
+        }, 400
     except IntegrityError:
         # Constraint failed - user exists
         return {
-            'success': False,
             'message': 'This user already exists.'
-        }
+        }, 400
 
     return {
         'success': True,
@@ -62,8 +64,13 @@ def register() -> dict:
 @blueprint.route('/login', methods=['POST'])
 def login() -> dict:
     try:
-        username = request.form['username']
-        password = request.form['password']
+        body = request.get_json()
+        username = body['username'],
+        password = body['password']
+    except BadRequest:
+        return {
+            'message': 'Failed to parse JSON body.',
+        }, 400
     except KeyError as ex:
         missing_arg = ex.args[0]
         return {
