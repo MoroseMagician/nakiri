@@ -10,7 +10,7 @@ blueprint = Blueprint('index', __name__)
 def index() -> dict:
     return {
         'name': 'Nakiri',
-        'version': 1.0
+        'version': '1.1'
     }
 
 
